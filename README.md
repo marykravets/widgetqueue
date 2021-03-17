@@ -1,6 +1,7 @@
 # widgetqueue
 
 A new flutter module project.
+Just a list of widgets with add/undo/redo/clear
 
 ## Getting Started
 
