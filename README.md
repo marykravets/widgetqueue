@@ -2,6 +2,8 @@
 
 A new flutter module project.
 
+Just a list of randomly colored widgets with add/undo/redo/clear.
+
 ## Getting Started
 
 For help getting started with Flutter, view our online
