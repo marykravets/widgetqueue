@@ -1,8 +1,6 @@
-import 'dart:collection';
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'CustomButton.dart';
-import 'Const.dart';
+import 'res/Const.dart';
+import 'helper/ListViewHelper.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -10,93 +8,41 @@ class HomePage extends StatefulWidget {
   final String title;
 
   @override
-  _HomePageState createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-
-  static final _random = new Random();
-  static final _scrollController = new ScrollController();
-  static final List<CustomButton> _list = [];
-  static final Queue<CustomButton> _queue = new Queue();
-
-  void scrollToEnd() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent + Const.containerHeight,
-      duration: Duration(seconds: 1),
-      curve: Curves.fastOutSlowIn,
-    );
-  }
-
-  void _addWidget() {
-    _list.add(new CustomButton(getRandomColor()));
-    scrollToEnd();
-
-    setState(() {});
-  }
-
-  void _undoWidget() {
-    _queue.add(_list.removeLast());
-    scrollToEnd();
-
-    setState(() {});
-  }
-
-  void _redoWidget() {
-    _list.add(_queue.removeLast());
-    scrollToEnd();
-
-    setState(() {});
-  }
-
-  void _clearWidget() {
-    _list.clear();
-    _queue.clear();
-
-    setState(() {});
-  }
-
-  getRandomColor() => Const.colors[_random.nextInt(Const.colors.length)];
-
-  MaterialColor getRedoBgColor() => _queue.length > 0 ? Colors.blue : Colors.grey;
-
-  MaterialColor getUndoBgColor() => _list.length > 0 ? Colors.blue : Colors.grey;
-
-  MaterialColor getClearBgColor() => (_list.length > 0 || _queue.length > 0) ? Colors.blue : Colors.grey;
+class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ListViewHelper helper = new ListViewHelper(this);
     final appBar = AppBar(title: Text(widget.title));
 
-    final listView = new ListView.builder(itemCount: _list.length,
-        itemBuilder: (_, index) => _list[index],
-        controller: _scrollController);
-
     final actionButton = FloatingActionButton(
-        onPressed: _addWidget,
+        onPressed: helper.addWidget,
         tooltip: Const.strAdd,
         child: Icon(Icons.add)
     );
 
     final undoButton = FloatingActionButton(
-        onPressed: _undoWidget,
+        onPressed: helper.undoWidget,
         tooltip: Const.strUndo,
         child: Icon(Icons.undo),
-        backgroundColor: getUndoBgColor()
+        backgroundColor: helper.getUndoBgColor()
     );
 
     final redoButton = FloatingActionButton(
-        onPressed: _redoWidget,
+        onPressed: helper.redoWidget,
         tooltip: Const.strRedo,
         child: Icon(Icons.redo),
-        backgroundColor: getRedoBgColor()
+        backgroundColor: helper.getRedoBgColor()
     );
 
     final clearButton = FloatingActionButton(
-        onPressed: _clearWidget,
+        onPressed: helper.clearWidget,
         tooltip: Const.strClear,
         child: Icon(Icons.cleaning_services),
-        backgroundColor: getClearBgColor()
+        backgroundColor: helper.getClearBgColor()
     );
 
     final actionBtnSpacing = SizedBox(height: 10);
@@ -104,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: appBar,
       body: Center(
-        child: listView
+        child: helper.getListView()
       ),
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,

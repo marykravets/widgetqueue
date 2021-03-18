@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class Const {
@@ -13,4 +15,7 @@ class Const {
   static const double containerHeight = 40;
 
   static List get colors => [Colors.red, Colors.green, Colors.yellow, Colors.blue, Colors.black];
+
+  static final _random = new Random();
+  static getRandomColor() => Const.colors[_random.nextInt(Const.colors.length)];
 }

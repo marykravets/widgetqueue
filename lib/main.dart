@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widgetqueue/HomePage.dart';
-import 'Const.dart';
+import 'res/Const.dart';
 
 void main() => runApp(WidgetQueueApp());
 
