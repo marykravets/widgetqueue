@@ -16,6 +16,7 @@ class CustomButton extends StatelessWidget {
         height: Const.containerHeight,
         child: FloatingActionButton(
           backgroundColor: _color,
+          onPressed: (){},
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: const <Widget>[

@@ -1,8 +1,8 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
 
 class Const {
+
+  //#region String constants
+
   static const appTitle = 'WidgetQueue Demo';
   static const pageTitle = 'WidgetQueue Demo Home Page';
 
@@ -10,12 +10,14 @@ class Const {
   static const strUndo = "Undo";
   static const strRedo = "Redo";
   static const strClear = "Clear";
+  static const strClearAll = "Clear All";
+
+  //#endregion
+
+  //#region numeric constants
 
   static const double containerWidth = 40;
   static const double containerHeight = 40;
 
-  static List get colors => [Colors.red, Colors.green, Colors.yellow, Colors.blue, Colors.black];
-
-  static final _random = new Random();
-  static getRandomColor() => Const.colors[_random.nextInt(Const.colors.length)];
+  //#endregion
 }

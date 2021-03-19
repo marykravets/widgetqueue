@@ -45,7 +45,16 @@ class HomePageState extends State<HomePage> {
         backgroundColor: helper.getClearBgColor()
     );
 
-    final actionBtnSpacing = SizedBox(height: 10);
+    final clearAllButton = FloatingActionButton(
+        onPressed: helper.clearAll,
+        tooltip: Const.strClearAll,
+        child: Icon(Icons.clean_hands),
+        backgroundColor: helper.getClearBgColor()
+    );
+
+    final btnSpacing = SizedBox(height: 10);
+
+    final btn4Spacing = SizedBox(height: 40);
 
     return Scaffold(
       appBar: appBar,
@@ -55,12 +64,14 @@ class HomePageState extends State<HomePage> {
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            clearAllButton,
+            btn4Spacing,
             clearButton,
-            actionBtnSpacing,
+            btnSpacing,
             undoButton,
-            actionBtnSpacing,
+            btnSpacing,
             redoButton,
-            actionBtnSpacing,
+            btnSpacing,
             actionButton
           ]
       ),
