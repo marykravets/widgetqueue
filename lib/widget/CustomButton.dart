@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import '../res/Const.dart';
 
 class CustomButton extends StatelessWidget {
+  const CustomButton(this._color);
 
-  Color _color;
-
-  CustomButton(Color color) {
-    _color = color;
-  }
+  final Color? _color;
 
   @override
   Widget build(BuildContext context) {

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ListStateInterface {
   void add(List<StatelessWidget> list) {}
-  List<StatelessWidget> removeLast() {}
-  List<StatelessWidget> getLast() {}
-  int getLength() {}
+  List<StatelessWidget>? removeLast() {}
+  List<StatelessWidget>? getLast() {}
+  int? getLength() {}
   void clear() {}
 }
 

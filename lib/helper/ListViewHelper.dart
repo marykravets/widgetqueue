@@ -10,16 +10,13 @@ import 'ListState.dart';
 import 'WidgetScrollController.dart';
 
 class ListViewHelper {
+  // state per instance with static list data
+  const ListViewHelper(this._state);
 
   static final _scrollController = new WidgetScrollController();
   static final Queue<List<StatelessWidget>> _queue = new Queue();
   static final ListState _listState = new ListState();
-  HomePageState _state;
-
-  ListViewHelper(HomePageState state) {
-    // state per instance with static list data
-    _state = state;
-  }
+  final HomePageState _state;
 
   void addWidget() {
     _queue.clear();

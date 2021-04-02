@@ -3,9 +3,9 @@ import 'res/Const.dart';
 import 'helper/ListViewHelper.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+  HomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   HomePageState createState() => HomePageState();
@@ -16,7 +16,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final ListViewHelper helper = new ListViewHelper(this);
-    final appBar = AppBar(title: Text(widget.title));
+    final appBar = AppBar(title: Text(widget.title!));
 
     final actionButton = FloatingActionButton(
         onPressed: helper.addWidget,
