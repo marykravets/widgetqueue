@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'helper/BaseUiMixin.dart';
 import 'res/Const.dart';
 import 'helper/ListViewHelper.dart';
 
@@ -11,49 +12,13 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> with BaseUiMixin {
 
   @override
   Widget build(BuildContext context) {
     final ListViewHelper helper = new ListViewHelper(this);
     final appBar = AppBar(title: Text(widget.title!));
-
-    final actionButton = FloatingActionButton(
-        onPressed: helper.addWidget,
-        tooltip: Const.strAdd,
-        child: Icon(Icons.add)
-    );
-
-    final undoButton = FloatingActionButton(
-        onPressed: helper.undoWidget,
-        tooltip: Const.strUndo,
-        child: Icon(Icons.undo),
-        backgroundColor: helper.getUndoBgColor()
-    );
-
-    final redoButton = FloatingActionButton(
-        onPressed: helper.redoWidget,
-        tooltip: Const.strRedo,
-        child: Icon(Icons.redo),
-        backgroundColor: helper.getRedoBgColor()
-    );
-
-    final clearButton = FloatingActionButton(
-        onPressed: helper.clearWidget,
-        tooltip: Const.strClear,
-        child: Icon(Icons.cleaning_services),
-        backgroundColor: helper.getClearBgColor()
-    );
-
-    final clearAllButton = FloatingActionButton(
-        onPressed: helper.clearAll,
-        tooltip: Const.strClearAll,
-        child: Icon(Icons.clean_hands),
-        backgroundColor: helper.getClearBgColor()
-    );
-
     final btnSpacing = SizedBox(height: 10);
-
     final btn4Spacing = SizedBox(height: 40);
 
     return Scaffold(
@@ -64,15 +29,15 @@ class HomePageState extends State<HomePage> {
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            clearAllButton,
+            getClearAllButton(helper),
             btn4Spacing,
-            clearButton,
+            getClearButton(helper),
             btnSpacing,
-            undoButton,
+            getUndoButton(helper),
             btnSpacing,
-            redoButton,
+            getRedoButton(helper),
             btnSpacing,
-            actionButton
+            getAddButton(helper)
           ]
       ),
     );
