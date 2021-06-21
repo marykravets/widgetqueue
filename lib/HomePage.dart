@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'helper/BaseUiMixin.dart';
-import 'res/Const.dart';
 import 'helper/ListViewHelper.dart';
 
 class HomePage extends StatefulWidget {
