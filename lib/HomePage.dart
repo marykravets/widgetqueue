@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:widgetqueue/res/ConstMethod.dart';
 import 'helper/BaseUiMixin.dart';
 import 'helper/ListViewHelper.dart';
 
@@ -23,7 +24,7 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
     return Scaffold(
       appBar: appBar,
       body: Center(
-        child: helper.getListView()
+        child: buildReorderableListView(helper),
       ),
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -40,5 +41,32 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
           ]
       ),
     );
+  }
+
+  ReorderableListView buildReorderableListView(ListViewHelper helper) {
+    return ReorderableListView(
+        children: <Widget>[
+          for(final item in helper.getLastListState())
+            Card(
+                color: Colors.white,
+                key: ValueKey(item),
+                elevation: 2,
+                child: item,
+                shape: ConstMethod.getRoundedBorder()
+            ),
+        ],
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (newIndex > oldIndex) {
+              newIndex -= 1;
+            }
+            final List<StatelessWidget> secondList = List.from(
+                helper.getLastListState());
+            secondList.insert(newIndex, secondList.removeAt(oldIndex));
+
+            helper.addNewState(secondList);
+          });
+        },
+        scrollController: helper.getScrollController());
   }
 }

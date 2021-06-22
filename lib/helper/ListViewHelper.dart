@@ -18,6 +18,10 @@ class ListViewHelper {
   static final ListState _listState = new ListState();
   final HomePageState _state;
 
+  List<StatelessWidget> getLastListState() {
+    return _listState.getLast();
+  }
+
   void addWidget() {
     _queue.clear();
     // add a new state to the end of main state
@@ -31,7 +35,9 @@ class ListViewHelper {
     // create a copy of the last state, add a change, return as a new state
     final List<StatelessWidget> _list = [];
 
-    if (_listState.getLast().isNotEmpty) {
+    if (_listState
+        .getLast()
+        .isNotEmpty) {
       _list.addAll(_listState.getLast());
     }
 
@@ -72,16 +78,24 @@ class ListViewHelper {
     _state.setState(() {});
   }
 
-  MaterialColor getRedoBgColor() => ConstMethod.getButtonColor(_queue.length > 0);
+  void addNewState(List<StatelessWidget> list) {
+    _listState.add(list);
+  }
 
-  MaterialColor getUndoBgColor() => ConstMethod.getButtonColor(_listState.getLast().length > 0 || _listState.getLength() > 0);
+  MaterialColor getRedoBgColor() =>
+      ConstMethod.getButtonColor(_queue.length > 0);
 
-  MaterialColor getClearBgColor() => ConstMethod.getButtonColor(_listState.getLast().length > 0 || _queue.length > 0);
+  MaterialColor getUndoBgColor() =>
+      ConstMethod.getButtonColor(_listState
+          .getLast()
+          .length > 0 || _listState.getLength() > 0);
 
-  // build the latest state in the ListView
-  ListView getListView() {
-    return new ListView.builder(itemCount: _listState.getLast().length,
-        itemBuilder: (_, index) => _listState.getLast()[index],
-        controller: _scrollController);
+  MaterialColor getClearBgColor() =>
+      ConstMethod.getButtonColor(_listState
+          .getLast()
+          .length > 0 || _queue.length > 0);
+
+  getScrollController() {
+    return _scrollController;
   }
 }
