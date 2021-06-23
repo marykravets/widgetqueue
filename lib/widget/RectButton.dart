@@ -8,10 +8,15 @@ class RectButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-        backgroundColor: _color,
-        onPressed: () {},
-        shape: ConstMethod.getRoundedBorder()
+    return Container(
+        width: 200.0,
+        height: 30.0,
+        child: new RawMaterialButton(
+          shape: ConstMethod.getRoundedBorder(),
+          elevation: 0.0,
+          fillColor: _color,
+          onPressed: () {},
+        )
     );
   }
 }

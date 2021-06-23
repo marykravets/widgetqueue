@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:widgetqueue/res/ConstMethod.dart';
+import 'package:widgetqueue/res/Const.dart';
 import 'helper/BaseUiMixin.dart';
 import 'helper/ListViewHelper.dart';
 
@@ -45,16 +45,7 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
 
   ReorderableListView buildReorderableListView(ListViewHelper helper) {
     return ReorderableListView(
-        children: <Widget>[
-          for(final item in helper.getLastListState())
-            Card(
-                color: Colors.white,
-                key: ValueKey(item),
-                elevation: 2,
-                child: item,
-                shape: ConstMethod.getRoundedBorder()
-            ),
-        ],
+        children: getChildren(helper),
         onReorder: (int oldIndex, int newIndex) {
           setState(() {
             if (newIndex > oldIndex) {
@@ -68,5 +59,30 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
           });
         },
         scrollController: helper.getScrollController());
+  }
+
+  List<Widget> getChildren(ListViewHelper helper) {
+    return <Widget>[
+        for(int i = 0; i < helper.getLastListState().length; i++)
+          Dismissible(
+              background: Container(color: Colors.red.shade100),
+              key: UniqueKey(),
+              onDismissed: (direction) {
+                // Remove the item from list
+                setState(() {
+                  final List<StatelessWidget> secondList = List.from(
+                      helper.getLastListState());
+                  secondList.removeAt(i);
+                  helper.addNewState(secondList);
+                });
+
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(Const.strDismissed)));
+              },
+              child: Center(
+                  child: helper.getLastListState().elementAt(i)
+              ),
+          ),
+      ];
   }
 }

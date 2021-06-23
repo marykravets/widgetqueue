@@ -12,6 +12,8 @@ class Const {
   static const strClear = "Clear";
   static const strClearAll = "Clear All";
 
+  static const strDismissed = "Item Dismissed";
+
   //#endregion
 
   //#region numeric constants
