@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:widgetqueue/res/Const.dart';
+import 'package:widgetqueue/res/ConstMethod.dart';
 import 'helper/BaseUiMixin.dart';
 import 'helper/ListViewHelper.dart';
 
@@ -63,26 +63,28 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
 
   List<Widget> getChildren(ListViewHelper helper) {
     return <Widget>[
-        for(int i = 0; i < helper.getLastListState().length; i++)
-          Dismissible(
-              background: Container(color: Colors.red.shade100),
-              key: UniqueKey(),
-              onDismissed: (direction) {
-                // Remove the item from list
-                setState(() {
-                  final List<StatelessWidget> secondList = List.from(
-                      helper.getLastListState());
-                  secondList.removeAt(i);
-                  helper.addNewState(secondList);
-                });
+      for(int i = 0; i < helper
+          .getLastListState()
+          .length; i++)
+        Dismissible(
+          background: ConstMethod.getDismissibleBackground(),
+          key: UniqueKey(),
+          onDismissed: (direction) {
+            // Remove the item from list
+            setState(() {
+              final List<StatelessWidget> secondList = List.from(
+                  helper.getLastListState());
+              secondList.removeAt(i);
+              helper.addNewState(secondList);
+            });
 
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(Const.strDismissed)));
-              },
-              child: Center(
-                  child: helper.getLastListState().elementAt(i)
-              ),
+            ScaffoldMessenger.of(context)
+                .showSnackBar(ConstMethod.getDismissBar());
+          },
+          child: Center(
+              child: helper.getLastListState().elementAt(i)
           ),
-      ];
+        ),
+    ];
   }
 }
