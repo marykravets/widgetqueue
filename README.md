@@ -2,7 +2,7 @@
 
 A new flutter module project.
 
-Just a list of randomly colored widgets with add/drag/drop/undo/redo/clear.
+Just a list of randomly colored widgets with add/remove/drag/drop/undo/redo/clear.
 
 ## Getting Started
 
