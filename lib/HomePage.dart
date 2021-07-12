@@ -17,11 +17,15 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
   @override
   Widget build(BuildContext context) {
     final ListViewHelper helper = new ListViewHelper(this);
-    final appBar = AppBar(title: Text(widget.title!));
+    final appBar = AppBar(
+        title: Text(widget.title!),
+        backgroundColor: Colors.black12,
+    );
     final btnSpacing = SizedBox(height: 10);
     final btn4Spacing = SizedBox(height: 40);
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: appBar,
       body: Center(
         child: buildReorderableListView(helper),
