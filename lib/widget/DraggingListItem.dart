@@ -29,7 +29,7 @@ class DraggingListItem extends StatelessWidget {
                 backgroundColor: color,
                 onPressed: () {},
                 shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.all(new Radius.circular(20.0)
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)
                     )
                 )
             ),

@@ -11,7 +11,7 @@ class RectButton extends StatelessWidget {
     return Container(
         width: 200.0,
         height: 30.0,
-        child: new RawMaterialButton(
+        child: RawMaterialButton(
           shape: ConstMethod.getRoundedBorder(),
           elevation: 0.0,
           fillColor: _color,

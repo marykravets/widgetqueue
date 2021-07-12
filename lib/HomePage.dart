@@ -16,7 +16,7 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
 
   @override
   Widget build(BuildContext context) {
-    final ListViewHelper helper = new ListViewHelper(this);
+    final ListViewHelper helper = ListViewHelper(this);
     final appBar = AppBar(
         title: Text(widget.title!),
         backgroundColor: Colors.black12,

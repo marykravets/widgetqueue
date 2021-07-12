@@ -20,9 +20,9 @@ class ListViewHelper {
     return _helper;
   }
 
-  static final _scrollController = new WidgetScrollController();
-  static final Queue<List<StatelessWidget>> _queue = new Queue();
-  static final ListState _listState = new ListState();
+  static final _scrollController = WidgetScrollController();
+  static final Queue<List<StatelessWidget>> _queue = Queue();
+  static final ListState _listState = ListState();
   late HomePageState _state;
 
   List<StatelessWidget> getLastListState() {
@@ -48,7 +48,7 @@ class ListViewHelper {
       _list.addAll(_listState.getLast());
     }
 
-    final Random random = new Random();
+    final Random random = Random();
     if (random.nextBool()) {
       _list.add(new CustomButton(ConstMethod.getRandomColor()));
     } else {
