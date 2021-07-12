@@ -6,7 +6,7 @@ class WidgetScrollController extends ScrollController {
   void scrollToEnd() {
     animateTo(
       position.maxScrollExtent + Const.containerHeight,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
       curve: Curves.fastOutSlowIn,
     );
   }

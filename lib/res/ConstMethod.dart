@@ -21,7 +21,7 @@ class ConstMethod {
 
   static RoundedRectangleBorder getRoundedBorder() {
     return RoundedRectangleBorder(
-        borderRadius: new BorderRadius.all(new Radius.circular(20.0)
+        borderRadius: BorderRadius.all(Radius.circular(20.0)
         )
     );
   }
@@ -36,9 +36,9 @@ class ConstMethod {
   static Container getDismissibleBackground() {
     return Container(
       alignment: Alignment.centerRight,
-      padding: EdgeInsets.only(right: 20.0),
+      padding: const EdgeInsets.only(right: 20.0),
       color: Colors.red.shade100,
-      child: Icon(
+      child: const Icon(
         Icons.delete,
         color: Colors.white,
       ),

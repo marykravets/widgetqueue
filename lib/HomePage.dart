@@ -21,8 +21,8 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
         title: Text(widget.title!),
         backgroundColor: Colors.black12,
     );
-    final btnSpacing = SizedBox(height: 10);
-    final btn4Spacing = SizedBox(height: 40);
+    final btnSpacing = const SizedBox(height: 10);
+    final btn4Spacing = const SizedBox(height: 40);
 
     return Scaffold(
       extendBodyBehindAppBar: true,

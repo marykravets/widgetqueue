@@ -8,7 +8,7 @@ mixin BaseUiMixin {
     return FloatingActionButton(
         onPressed: helper.addWidget,
         tooltip: Const.strAdd,
-        child: Icon(Icons.add)
+        child: const Icon(Icons.add)
     );
   }
 
@@ -16,7 +16,7 @@ mixin BaseUiMixin {
     return FloatingActionButton(
         onPressed: helper.undoWidget,
         tooltip: Const.strUndo,
-        child: Icon(Icons.undo),
+        child: const Icon(Icons.undo),
         backgroundColor: helper.getUndoBgColor()
     );
   }
@@ -25,7 +25,7 @@ mixin BaseUiMixin {
     return FloatingActionButton(
         onPressed: helper.redoWidget,
         tooltip: Const.strRedo,
-        child: Icon(Icons.redo),
+        child: const Icon(Icons.redo),
         backgroundColor: helper.getRedoBgColor()
     );
   }
@@ -34,7 +34,7 @@ mixin BaseUiMixin {
     return FloatingActionButton(
         onPressed: helper.clearWidget,
         tooltip: Const.strClear,
-        child: Icon(Icons.cleaning_services),
+        child: const Icon(Icons.cleaning_services),
         backgroundColor: helper.getClearBgColor()
     );
   }
@@ -43,7 +43,7 @@ mixin BaseUiMixin {
     return FloatingActionButton(
         onPressed: helper.clearAll,
         tooltip: Const.strClearAll,
-        child: Icon(Icons.clean_hands),
+        child: const Icon(Icons.clean_hands),
         backgroundColor: helper.getClearBgColor()
     );
   }
