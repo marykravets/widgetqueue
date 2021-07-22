@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:widgetqueue/res/ConstMethod.dart';
 
-class RectButton extends StatelessWidget {
-  const RectButton(this._color);
+import 'BaseCustomButton.dart';
+
+class RectButton extends BaseCustomButton {
+  RectButton(this._color);
 
   final Color? _color;
 
   @override
-  Widget build(BuildContext context) {
+  Container getContainer() {
     return Container(
         width: 200.0,
         height: 30.0,
@@ -18,5 +20,10 @@ class RectButton extends StatelessWidget {
           onPressed: () {},
         )
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return getContainer();
   }
 }

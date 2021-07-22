@@ -59,14 +59,18 @@ class ListViewHelper {
   }
 
   void undoWidget() {
-    _queue.add(_listState.removeLast());
+    if (_listState.getLength() > 0) {
+      _queue.add(_listState.removeLast());
+    }
     _scrollController.scrollToEnd();
 
     _state.setState(() {});
   }
 
   void redoWidget() {
-    _listState.add(_queue.removeLast());
+    if (_queue.isNotEmpty) {
+      _listState.add(_queue.removeLast());
+    }
     _scrollController.scrollToEnd();
 
     _state.setState(() {});

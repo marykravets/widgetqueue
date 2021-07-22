@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../res/Const.dart';
+import 'BaseCustomButton.dart';
 
-class CustomButton extends StatelessWidget {
-  const CustomButton(this._color);
+class CustomButton extends BaseCustomButton {
+  CustomButton(this._color);
 
   final Color? _color;
 
   @override
-  Widget build(BuildContext context) {
+  Container getContainer() {
     return Container(
         width: Const.containerWidth,
         height: Const.containerHeight,
@@ -25,5 +26,10 @@ class CustomButton extends StatelessWidget {
           ),
         )
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return getContainer();
   }
 }

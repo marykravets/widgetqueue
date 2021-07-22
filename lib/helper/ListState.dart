@@ -23,10 +23,7 @@ class ListState implements ListStateInterface {
   }
 
   List<StatelessWidget> getLast() {
-    if (_list.isEmpty) {
-      return [];
-    }
-    return _list.last;
+    return _list.isEmpty ? [] : _list.last;
   }
 
   int getLength() {
