@@ -89,15 +89,15 @@ class HistoryState {
 
   void reorderState(int newIndex, int oldIndex) {
     final List<StatelessWidget> secondList = List.from(
-        _historyState.getLastState());
+        getLastState());
     secondList.insert(newIndex, secondList.removeAt(oldIndex));
-    _historyState.addToState(secondList);
+    addToState(secondList);
   }
 
   void removeItemFromState(int index) {
     final List<StatelessWidget> secondList = List.from(
-        _historyState.getLastState());
+        getLastState());
     secondList.removeAt(index);
-    _historyState.addToState(secondList);
+    addToState(secondList);
   }
 }
