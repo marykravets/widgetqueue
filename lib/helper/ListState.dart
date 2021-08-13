@@ -11,6 +11,7 @@ class ListStateInterface {
 // class that memorizes list state
 class ListState implements ListStateInterface {
   final List<List<StatelessWidget>> _list = [];
+  final List<StatelessWidget> _emptyList = [];
 
   ListState();
 
@@ -23,7 +24,7 @@ class ListState implements ListStateInterface {
   }
 
   List<StatelessWidget> getLast() {
-    return _list.isEmpty ? [] : _list.last;
+    return _list.isEmpty ? _emptyList : _list.last;
   }
 
   int getLength() {

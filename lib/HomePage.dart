@@ -19,7 +19,9 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
 
   static final _scrollController = WidgetScrollController();
-  static final _state = HistoryState();
+  static final _historyState = HistoryState();
+  // const of empty list to make sure the list created once (save some memory)
+  final List<StatelessWidget> _emptyList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -61,17 +63,14 @@ class HomePageState extends State<HomePage> {
             if (newIndex > oldIndex) {
               newIndex -= 1;
             }
-            final List<StatelessWidget> secondList = List.from(
-                _state.getLastState());
-            secondList.insert(newIndex, secondList.removeAt(oldIndex));
-            _state.add(secondList);
+            _historyState.reorderState(newIndex, oldIndex);
           });
         },
         scrollController: _scrollController);
   }
 
   List<Widget> getChildren() {
-    final int lastStateLength = _state.getLastStateLen();
+    final int lastStateLength = _historyState.getLastStateLen();
     return <Widget>[
       for(int i = 0; i < lastStateLength; i++)
         Dismissible(
@@ -80,17 +79,14 @@ class HomePageState extends State<HomePage> {
           onDismissed: (direction) {
             // Remove the item from list
             setState(() {
-              final List<StatelessWidget> secondList = List.from(
-                  _state.getLastState());
-              secondList.removeAt(i);
-              _state.add(secondList);
+              _historyState.removeItemFromState(i);
             });
 
             ScaffoldMessenger.of(context)
                 .showSnackBar(ConstMethod.getDismissBar());
           },
           child: Center(
-              child: _state.getLastState().elementAt(i)
+              child: _historyState.getLastState().elementAt(i)
           ),
         ),
     ];
@@ -100,9 +96,9 @@ class HomePageState extends State<HomePage> {
 
   void addWidget() {
     setState(() {
-      _state.clearQueue();
+      _historyState.clearQueue();
       // add a new state to the end of main state
-      _state.add(_getNewState());
+      _historyState.addToState(_getNewState());
       _scrollController.scrollToEnd();
     });
   }
@@ -111,8 +107,8 @@ class HomePageState extends State<HomePage> {
     // create a copy of the last state, add a change, return as a new state
     final List<StatelessWidget> _list = [];
 
-    if (_state.isLastStateNotEmpty()) {
-      _list.addAll(_state.getLastState());
+    if (_historyState.isLastStateNotEmpty()) {
+      _list.addAll(_historyState.getLastState());
     }
 
     final Random random = Random();
@@ -127,42 +123,33 @@ class HomePageState extends State<HomePage> {
 
   void undoWidget() {
     setState(() {
-      if (_state.getStateLen() > 0) {
-        _state.addToQueue(_state.removeLast());
-      }
+      _historyState.addLastStateToQueue();
       _scrollController.scrollToEnd();
     });
   }
 
   void redoWidget() {
     setState(() {
-      if (_state.isQueueNotEmpty()) {
-        _state.add(_state.removeLastFromQueue());
-      }
+      _historyState.addLastQueueToState();
       _scrollController.scrollToEnd();
     });
   }
 
   void clearWidget() {
     setState(() {
-      _state.add([]);
+      _historyState.addToState(_emptyList);
     });
   }
 
   void clearAll() {
     setState(() {
-      _state.clear();
+      _historyState.clear();
     });
   }
 
-  MaterialColor getRedoBgColor() =>
-      ConstMethod.getButtonColor(_state.getQueueLen()> 0);
-
-  MaterialColor getUndoBgColor() =>
-      ConstMethod.getButtonColor(_state.getLastStateLen() > 0 || _state.getStateLen() > 0);
-
-  MaterialColor getClearBgColor() =>
-      ConstMethod.getButtonColor(_state.getLastStateLen() > 0 || _state.getQueueLen() > 0);
+  MaterialColor getRedoBgColor() => ConstMethod.getButtonColor(_historyState.isRedoActive());
+  MaterialColor getUndoBgColor() => ConstMethod.getButtonColor(_historyState.isUndoActive());
+  MaterialColor getClearBgColor() => ConstMethod.getButtonColor(_historyState.isClearActive());
 
   FloatingActionButton getAddButton() {
     return FloatingActionButton(

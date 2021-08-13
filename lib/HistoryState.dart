@@ -43,7 +43,7 @@ class HistoryState {
     return _listState.getLength();
   }
 
-  void add(List<StatelessWidget> list) {
+  void addToState(List<StatelessWidget> list) {
     _listState.add(list);
   }
 
@@ -61,5 +61,43 @@ class HistoryState {
 
   bool isLastStateNotEmpty() {
     return _listState.getLast().isNotEmpty;
+  }
+
+  void addLastStateToQueue() {
+    if (getStateLen() > 0) {
+      addToQueue(removeLast());
+    }
+  }
+
+  void addLastQueueToState() {
+    if (isQueueNotEmpty()) {
+      addToState(removeLastFromQueue());
+    }
+  }
+
+  bool isClearActive() {
+    return getLastStateLen() > 0 || getQueueLen() > 0;
+  }
+
+  bool isUndoActive() {
+    return getLastStateLen() > 0 || getStateLen() > 0;
+  }
+
+  bool isRedoActive() {
+    return getQueueLen() > 0;
+  }
+
+  void reorderState(int newIndex, int oldIndex) {
+    final List<StatelessWidget> secondList = List.from(
+        _historyState.getLastState());
+    secondList.insert(newIndex, secondList.removeAt(oldIndex));
+    _historyState.addToState(secondList);
+  }
+
+  void removeItemFromState(int index) {
+    final List<StatelessWidget> secondList = List.from(
+        _historyState.getLastState());
+    secondList.removeAt(index);
+    _historyState.addToState(secondList);
   }
 }
