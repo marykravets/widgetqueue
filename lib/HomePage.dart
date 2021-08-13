@@ -1,12 +1,10 @@
-import 'dart:collection';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:widgetqueue/res/Const.dart';
 import 'package:widgetqueue/res/ConstMethod.dart';
 import 'package:widgetqueue/widget/CustomButton.dart';
 import 'package:widgetqueue/widget/RectButton.dart';
-import 'helper/ListState.dart';
+import 'package:widgetqueue/HistoryState.dart';
 import 'helper/WidgetScrollController.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,8 +19,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
 
   static final _scrollController = WidgetScrollController();
-  static final Queue<List<StatelessWidget>> _queue = Queue();
-  static final ListState _listState = ListState();
+  static final _state = HistoryState();
 
   @override
   Widget build(BuildContext context) {
@@ -65,16 +62,16 @@ class HomePageState extends State<HomePage> {
               newIndex -= 1;
             }
             final List<StatelessWidget> secondList = List.from(
-                _listState.getLast());
+                _state.getLastState());
             secondList.insert(newIndex, secondList.removeAt(oldIndex));
-            _listState.add(secondList);
+            _state.add(secondList);
           });
         },
         scrollController: _scrollController);
   }
 
   List<Widget> getChildren() {
-    final int lastStateLength = _listState.getLast().length;
+    final int lastStateLength = _state.getLastStateLen();
     return <Widget>[
       for(int i = 0; i < lastStateLength; i++)
         Dismissible(
@@ -84,16 +81,16 @@ class HomePageState extends State<HomePage> {
             // Remove the item from list
             setState(() {
               final List<StatelessWidget> secondList = List.from(
-                  _listState.getLast());
+                  _state.getLastState());
               secondList.removeAt(i);
-              _listState.add(secondList);
+              _state.add(secondList);
             });
 
             ScaffoldMessenger.of(context)
                 .showSnackBar(ConstMethod.getDismissBar());
           },
           child: Center(
-              child: _listState.getLast().elementAt(i)
+              child: _state.getLastState().elementAt(i)
           ),
         ),
     ];
@@ -103,9 +100,9 @@ class HomePageState extends State<HomePage> {
 
   void addWidget() {
     setState(() {
-      _queue.clear();
+      _state.clearQueue();
       // add a new state to the end of main state
-      _listState.add(_getNewState());
+      _state.add(_getNewState());
       _scrollController.scrollToEnd();
     });
   }
@@ -114,10 +111,8 @@ class HomePageState extends State<HomePage> {
     // create a copy of the last state, add a change, return as a new state
     final List<StatelessWidget> _list = [];
 
-    if (_listState
-        .getLast()
-        .isNotEmpty) {
-      _list.addAll(_listState.getLast());
+    if (_state.isLastStateNotEmpty()) {
+      _list.addAll(_state.getLastState());
     }
 
     final Random random = Random();
@@ -132,8 +127,8 @@ class HomePageState extends State<HomePage> {
 
   void undoWidget() {
     setState(() {
-      if (_listState.getLength() > 0) {
-        _queue.add(_listState.removeLast());
+      if (_state.getStateLen() > 0) {
+        _state.addToQueue(_state.removeLast());
       }
       _scrollController.scrollToEnd();
     });
@@ -141,8 +136,8 @@ class HomePageState extends State<HomePage> {
 
   void redoWidget() {
     setState(() {
-      if (_queue.isNotEmpty) {
-        _listState.add(_queue.removeLast());
+      if (_state.isQueueNotEmpty()) {
+        _state.add(_state.removeLastFromQueue());
       }
       _scrollController.scrollToEnd();
     });
@@ -150,29 +145,24 @@ class HomePageState extends State<HomePage> {
 
   void clearWidget() {
     setState(() {
-      _listState.add([]);
+      _state.add([]);
     });
   }
 
   void clearAll() {
     setState(() {
-      _queue.clear();
-      _listState.clear();
+      _state.clear();
     });
   }
 
   MaterialColor getRedoBgColor() =>
-      ConstMethod.getButtonColor(_queue.length > 0);
+      ConstMethod.getButtonColor(_state.getQueueLen()> 0);
 
   MaterialColor getUndoBgColor() =>
-      ConstMethod.getButtonColor(_listState
-          .getLast()
-          .length > 0 || _listState.getLength() > 0);
+      ConstMethod.getButtonColor(_state.getLastStateLen() > 0 || _state.getStateLen() > 0);
 
   MaterialColor getClearBgColor() =>
-      ConstMethod.getButtonColor(_listState
-          .getLast()
-          .length > 0 || _queue.length > 0);
+      ConstMethod.getButtonColor(_state.getLastStateLen() > 0 || _state.getQueueLen() > 0);
 
   FloatingActionButton getAddButton() {
     return FloatingActionButton(
