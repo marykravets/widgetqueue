@@ -1,7 +1,13 @@
+import 'dart:collection';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:widgetqueue/res/Const.dart';
 import 'package:widgetqueue/res/ConstMethod.dart';
-import 'helper/BaseUiMixin.dart';
-import 'helper/ListViewHelper.dart';
+import 'package:widgetqueue/widget/CustomButton.dart';
+import 'package:widgetqueue/widget/RectButton.dart';
+import 'helper/ListState.dart';
+import 'helper/WidgetScrollController.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key, this.title}) : super(key: key);
@@ -12,11 +18,14 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> with BaseUiMixin {
+class HomePageState extends State<HomePage> {
+
+  static final _scrollController = WidgetScrollController();
+  static final Queue<List<StatelessWidget>> _queue = Queue();
+  static final ListState _listState = ListState();
 
   @override
   Widget build(BuildContext context) {
-    final ListViewHelper helper = ListViewHelper(this);
     final appBar = AppBar(
         title: Text(widget.title!),
         backgroundColor: Colors.black12,
@@ -28,48 +37,46 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
       extendBodyBehindAppBar: true,
       appBar: appBar,
       body: Center(
-        child: buildReorderableListView(helper),
+        child: buildReorderableListView(),
       ),
       floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            getClearAllButton(helper),
+            getClearAllButton(),
             btn4Spacing,
-            getClearButton(helper),
+            getClearButton(),
             btnSpacing,
-            getUndoButton(helper),
+            getUndoButton(),
             btnSpacing,
-            getRedoButton(helper),
+            getRedoButton(),
             btnSpacing,
-            getAddButton(helper)
+            getAddButton()
           ]
       ),
     );
   }
 
-  ReorderableListView buildReorderableListView(ListViewHelper helper) {
+  ReorderableListView buildReorderableListView() {
     return ReorderableListView(
-        children: getChildren(helper),
+        children: getChildren(),
         onReorder: (int oldIndex, int newIndex) {
           setState(() {
             if (newIndex > oldIndex) {
               newIndex -= 1;
             }
             final List<StatelessWidget> secondList = List.from(
-                helper.getLastListState());
+                _listState.getLast());
             secondList.insert(newIndex, secondList.removeAt(oldIndex));
-
-            helper.addNewState(secondList);
+            _listState.add(secondList);
           });
         },
-        scrollController: helper.getScrollController());
+        scrollController: _scrollController);
   }
 
-  List<Widget> getChildren(ListViewHelper helper) {
+  List<Widget> getChildren() {
+    final int lastStateLength = _listState.getLast().length;
     return <Widget>[
-      for(int i = 0; i < helper
-          .getLastListState()
-          .length; i++)
+      for(int i = 0; i < lastStateLength; i++)
         Dismissible(
           background: ConstMethod.getDismissibleBackground(),
           key: UniqueKey(),
@@ -77,18 +84,139 @@ class HomePageState extends State<HomePage> with BaseUiMixin {
             // Remove the item from list
             setState(() {
               final List<StatelessWidget> secondList = List.from(
-                  helper.getLastListState());
+                  _listState.getLast());
               secondList.removeAt(i);
-              helper.addNewState(secondList);
+              _listState.add(secondList);
             });
 
             ScaffoldMessenger.of(context)
                 .showSnackBar(ConstMethod.getDismissBar());
           },
           child: Center(
-              child: helper.getLastListState().elementAt(i)
+              child: _listState.getLast().elementAt(i)
           ),
         ),
     ];
   }
+
+  //#region Helper UI
+
+  void addWidget() {
+    setState(() {
+      _queue.clear();
+      // add a new state to the end of main state
+      _listState.add(_getNewState());
+      _scrollController.scrollToEnd();
+    });
+  }
+
+  List<StatelessWidget> _getNewState() {
+    // create a copy of the last state, add a change, return as a new state
+    final List<StatelessWidget> _list = [];
+
+    if (_listState
+        .getLast()
+        .isNotEmpty) {
+      _list.addAll(_listState.getLast());
+    }
+
+    final Random random = Random();
+    if (random.nextBool()) {
+      _list.add(new CustomButton(ConstMethod.getRandomColor()));
+    } else {
+      _list.add(new RectButton(ConstMethod.getRandomColor()));
+    }
+
+    return _list;
+  }
+
+  void undoWidget() {
+    setState(() {
+      if (_listState.getLength() > 0) {
+        _queue.add(_listState.removeLast());
+      }
+      _scrollController.scrollToEnd();
+    });
+  }
+
+  void redoWidget() {
+    setState(() {
+      if (_queue.isNotEmpty) {
+        _listState.add(_queue.removeLast());
+      }
+      _scrollController.scrollToEnd();
+    });
+  }
+
+  void clearWidget() {
+    setState(() {
+      _listState.add([]);
+    });
+  }
+
+  void clearAll() {
+    setState(() {
+      _queue.clear();
+      _listState.clear();
+    });
+  }
+
+  MaterialColor getRedoBgColor() =>
+      ConstMethod.getButtonColor(_queue.length > 0);
+
+  MaterialColor getUndoBgColor() =>
+      ConstMethod.getButtonColor(_listState
+          .getLast()
+          .length > 0 || _listState.getLength() > 0);
+
+  MaterialColor getClearBgColor() =>
+      ConstMethod.getButtonColor(_listState
+          .getLast()
+          .length > 0 || _queue.length > 0);
+
+  FloatingActionButton getAddButton() {
+    return FloatingActionButton(
+        onPressed: addWidget,
+        tooltip: Const.strAdd,
+        child: const Icon(Icons.add)
+    );
+  }
+
+  FloatingActionButton getUndoButton() {
+    return FloatingActionButton(
+        onPressed: undoWidget,
+        tooltip: Const.strUndo,
+        child: const Icon(Icons.undo),
+        backgroundColor: getUndoBgColor()
+    );
+  }
+
+  FloatingActionButton getRedoButton() {
+    return FloatingActionButton(
+        onPressed: redoWidget,
+        tooltip: Const.strRedo,
+        child: const Icon(Icons.redo),
+        backgroundColor: getRedoBgColor()
+    );
+  }
+
+  FloatingActionButton getClearButton() {
+    return FloatingActionButton(
+        onPressed: clearWidget,
+        tooltip: Const.strClear,
+        child: const Icon(Icons.cleaning_services),
+        backgroundColor: getClearBgColor()
+    );
+  }
+
+  FloatingActionButton getClearAllButton() {
+    return FloatingActionButton(
+        onPressed: clearAll,
+        tooltip: Const.strClearAll,
+        child: const Icon(Icons.clean_hands),
+        backgroundColor: getClearBgColor()
+    );
+  }
+
+  //#endregion
 }
