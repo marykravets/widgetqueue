@@ -27,14 +27,14 @@ class DraggingListItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0),
         child: SizedBox(
           height: Const.containerHeight,
-          width: (isRect) ? MediaQuery.of(context).size.width : Const.containerWidth,
-          child: Opacity(
-            opacity: 0.55,
-            child: FloatingActionButton(
-                backgroundColor: color,
-                onPressed: () {},
-                shape: _listItemShape,
-            ),
+          width: (isRect) ? MediaQuery
+              .of(context)
+              .size
+              .width : Const.containerWidth,
+          child: FloatingActionButton(
+            backgroundColor: color,
+            onPressed: () {},
+            shape: _listItemShape,
           ),
         ),
       ),
