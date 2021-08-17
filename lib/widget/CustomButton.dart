@@ -6,25 +6,21 @@ class CustomButton extends BaseCustomButton {
   CustomButton(this._color);
 
   final Color? _color;
+  static const SizedBox _child = const SizedBox(
+    width: 5.0,
+    height: 5.0,
+  );
 
   @override
   Container getContainer() {
     return Container(
         width: Const.containerWidth,
         height: Const.containerHeight,
-        child: FloatingActionButton(
-          backgroundColor: _color,
-          onPressed: () {},
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const <Widget>[
-              SizedBox(
-                width: 5.0,
-                height: 5.0,
-              ),
-            ],
-          ),
-        )
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            color: _color
+        ),
+        child: _child,
     );
   }
 

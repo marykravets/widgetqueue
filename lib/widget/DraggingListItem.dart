@@ -13,6 +13,11 @@ class DraggingListItem extends StatelessWidget {
   final Color? color;
   final bool isRect;
 
+  static const RoundedRectangleBorder _listItemShape = RoundedRectangleBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(20.0)
+      )
+  );
+
   @override
   Widget build(BuildContext context) {
     return FractionalTranslation(
@@ -28,10 +33,7 @@ class DraggingListItem extends StatelessWidget {
             child: FloatingActionButton(
                 backgroundColor: color,
                 onPressed: () {},
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20.0)
-                    )
-                )
+                shape: _listItemShape,
             ),
           ),
         ),

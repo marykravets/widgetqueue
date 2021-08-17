@@ -23,14 +23,15 @@ class HomePageState extends State<HomePage> {
   // const of empty list to make sure the list created once (save some memory)
   final List<StatelessWidget> _emptyList = [];
 
+  static const _btnSpacing = const SizedBox(height: 10);
+  static const _btn4Spacing = const SizedBox(height: 40);
+
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
-        title: Text(widget.title!),
-        backgroundColor: Colors.black12,
+      title: Text(widget.title!),
+      backgroundColor: Colors.black12,
     );
-    final btnSpacing = const SizedBox(height: 10);
-    final btn4Spacing = const SizedBox(height: 40);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -42,13 +43,13 @@ class HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             getClearAllButton(),
-            btn4Spacing,
+            _btn4Spacing,
             getClearButton(),
-            btnSpacing,
+            _btnSpacing,
             getUndoButton(),
-            btnSpacing,
+            _btnSpacing,
             getRedoButton(),
-            btnSpacing,
+            _btnSpacing,
             getAddButton()
           ]
       ),

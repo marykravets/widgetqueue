@@ -6,6 +6,7 @@ import 'BaseCustomButton.dart';
 class RectButton extends BaseCustomButton {
   RectButton(this._color);
 
+  final RoundedRectangleBorder _shape = ConstMethod.getRoundedBorder();
   final Color? _color;
 
   @override
@@ -14,7 +15,7 @@ class RectButton extends BaseCustomButton {
         width: 200.0,
         height: 30.0,
         child: RawMaterialButton(
-          shape: ConstMethod.getRoundedBorder(),
+          shape: _shape,
           elevation: 0.0,
           fillColor: _color,
           onPressed: () {},

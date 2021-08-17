@@ -20,14 +20,14 @@ class ConstMethod {
   }
 
   static RoundedRectangleBorder getRoundedBorder() {
-    return RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20.0)
+    return const RoundedRectangleBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(20.0)
         )
     );
   }
 
   static SnackBar getDismissBar() {
-    return SnackBar(
+    return const SnackBar(
       content: const Text(Const.strDismissed),
       duration: const Duration(milliseconds: 50),
     );
