@@ -1,9 +1,6 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:widgetqueue/res/Const.dart';
 import 'package:widgetqueue/res/ConstMethod.dart';
-import 'package:widgetqueue/widget/CustomButton.dart';
-import 'package:widgetqueue/widget/RectButton.dart';
 import 'package:widgetqueue/HistoryState.dart';
 import 'helper/WidgetScrollController.dart';
 
@@ -20,8 +17,6 @@ class HomePageState extends State<HomePage> {
 
   static final _scrollController = WidgetScrollController();
   static final _historyState = HistoryState();
-  // const of empty list to make sure the list created once (save some memory)
-  final List<StatelessWidget> _emptyList = [];
 
   static const _btnSpacing = const SizedBox(height: 10);
   static const _btn4Spacing = const SizedBox(height: 40);
@@ -64,7 +59,9 @@ class HomePageState extends State<HomePage> {
             if (newIndex > oldIndex) {
               newIndex -= 1;
             }
-            _historyState.reorderState(newIndex, oldIndex);
+            _historyState.stateDo(
+                StateAction.Reorder, newReorderIndex: newIndex,
+                oldReorderIndex: oldIndex);
           });
         },
         scrollController: _scrollController);
@@ -80,7 +77,8 @@ class HomePageState extends State<HomePage> {
           onDismissed: (direction) {
             // Remove the item from list
             setState(() {
-              _historyState.removeItemFromState(i);
+              _historyState.stateDo(
+                  StateAction.RemoveItem, itemToRemoveIndex: i);
             });
 
             ScaffoldMessenger.of(context)
@@ -97,60 +95,46 @@ class HomePageState extends State<HomePage> {
 
   void addWidget() {
     setState(() {
-      _historyState.clearQueue();
       // add a new state to the end of main state
-      _historyState.addToState(_getNewState());
+      _historyState.stateDo(StateAction.Add);
       _scrollController.scrollToEnd();
     });
   }
 
-  List<StatelessWidget> _getNewState() {
-    // create a copy of the last state, add a change, return as a new state
-    final List<StatelessWidget> _list = [];
-
-    if (_historyState.isLastStateNotEmpty()) {
-      _list.addAll(_historyState.getLastState());
-    }
-
-    final Random random = Random();
-    if (random.nextBool()) {
-      _list.add(new CustomButton(ConstMethod.getRandomColor()));
-    } else {
-      _list.add(new RectButton(ConstMethod.getRandomColor()));
-    }
-
-    return _list;
-  }
-
   void undoWidget() {
     setState(() {
-      _historyState.addLastStateToQueue();
+      _historyState.undo();
       _scrollController.scrollToEnd();
     });
   }
 
   void redoWidget() {
     setState(() {
-      _historyState.addLastQueueToState();
+      _historyState.redo();
       _scrollController.scrollToEnd();
     });
   }
 
   void clearWidget() {
     setState(() {
-      _historyState.addToState(_emptyList);
+      _historyState.stateDo(StateAction.ClearWidget);
     });
   }
 
   void clearAll() {
     setState(() {
-      _historyState.clear();
+      _historyState.stateDo(StateAction.Clean);
     });
   }
 
-  MaterialColor getRedoBgColor() => ConstMethod.getButtonColor(_historyState.isRedoActive());
-  MaterialColor getUndoBgColor() => ConstMethod.getButtonColor(_historyState.isUndoActive());
-  MaterialColor getClearBgColor() => ConstMethod.getButtonColor(_historyState.isClearActive());
+  MaterialColor getRedoBgColor() =>
+      ConstMethod.getButtonColor(_historyState.isRedoActive());
+
+  MaterialColor getUndoBgColor() =>
+      ConstMethod.getButtonColor(_historyState.isUndoActive());
+
+  MaterialColor getClearBgColor() =>
+      ConstMethod.getButtonColor(_historyState.isClearActive());
 
   FloatingActionButton getAddButton() {
     return FloatingActionButton(
@@ -196,5 +180,5 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  //#endregion
+//#endregion
 }

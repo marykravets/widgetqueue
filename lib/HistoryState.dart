@@ -1,8 +1,15 @@
 import 'dart:collection';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:widgetqueue/res/ConstMethod.dart';
+import 'package:widgetqueue/widget/CustomButton.dart';
+import 'package:widgetqueue/widget/RectButton.dart';
 import 'helper/ListState.dart';
 
 class HistoryState {
+  // const of empty list to make sure the list created once (save some memory)
+  final List<StatelessWidget> _emptyList = [];
+
   static late Queue<List<StatelessWidget>> _queue = Queue();
   static late ListState _listState = ListState();
 
@@ -14,43 +21,6 @@ class HistoryState {
 
   HistoryState._internal();
 
-  bool isQueueNotEmpty() {
-    return _queue.isNotEmpty;
-  }
-
-  List<StatelessWidget> removeLastFromQueue() {
-    return _queue.removeLast();
-  }
-
-  void addToQueue(List<StatelessWidget> list) {
-    _queue.add(list);
-  }
-
-  int getQueueLen() {
-    return _queue.length;
-  }
-
-  void clear() {
-    clearQueue();
-    _listState.clear();
-  }
-
-  void clearQueue() {
-    _queue.clear();
-  }
-
-  int getStateLen() {
-    return _listState.getLength();
-  }
-
-  void addToState(List<StatelessWidget> list) {
-    _listState.add(list);
-  }
-
-  List<StatelessWidget> removeLast() {
-    return _listState.removeLast();
-  }
-
   List<StatelessWidget> getLastState() {
     return _listState.getLast();
   }
@@ -59,45 +29,97 @@ class HistoryState {
     return _listState.getLast().length;
   }
 
-  bool isLastStateNotEmpty() {
-    return _listState.getLast().isNotEmpty;
-  }
-
-  void addLastStateToQueue() {
-    if (getStateLen() > 0) {
-      addToQueue(removeLast());
+  void undo() {
+    if (_listState.getLength() > 0) {
+      _queue.add(_listState.removeLast());
     }
   }
 
-  void addLastQueueToState() {
-    if (isQueueNotEmpty()) {
-      addToState(removeLastFromQueue());
+  void redo() {
+    if (_queue.isNotEmpty) {
+      _listState.add(_queue.removeLast());
     }
   }
 
   bool isClearActive() {
-    return getLastStateLen() > 0 || getQueueLen() > 0;
+    return getLastStateLen() > 0 || _queue.length > 0;
   }
 
   bool isUndoActive() {
-    return getLastStateLen() > 0 || getStateLen() > 0;
+    return getLastStateLen() > 0 || _listState.getLength() > 0;
   }
 
   bool isRedoActive() {
-    return getQueueLen() > 0;
+    return _queue.length > 0;
   }
 
-  void reorderState(int newIndex, int oldIndex) {
+  void _reorderState(int newIndex, int oldIndex) {
     final List<StatelessWidget> secondList = List.from(
         getLastState());
     secondList.insert(newIndex, secondList.removeAt(oldIndex));
-    addToState(secondList);
+    _listState.add(secondList);
   }
 
-  void removeItemFromState(int index) {
+  void _removeItemFromState(int index) {
     final List<StatelessWidget> secondList = List.from(
         getLastState());
     secondList.removeAt(index);
-    addToState(secondList);
+    _listState.add(secondList);
   }
+
+  List<StatelessWidget> _getNewState() {
+    // create a copy of the last state, add a change, return as a new state
+    final List<StatelessWidget> _list = [];
+
+    if (_listState.getLast().isNotEmpty) {
+      _list.addAll(getLastState());
+    }
+
+    final Random random = Random();
+    if (random.nextBool()) {
+      _list.add(new CustomButton(ConstMethod.getRandomColor()));
+    } else {
+      _list.add(new RectButton(ConstMethod.getRandomColor()));
+    }
+
+    return _list;
+  }
+
+  void stateDo(StateAction action,
+      {int newReorderIndex = 0, int oldReorderIndex = 0, int, itemToRemoveIndex = 0}) {
+    switch(action) {
+      case StateAction.Add:
+        _queue.clear();
+        _listState.add(_getNewState());
+        break;
+
+      case StateAction.Clean:
+        _queue.clear();
+        _listState.clear();
+        break;
+
+      case StateAction.ClearWidget:
+        _listState.add(_emptyList);
+        break;
+
+      case StateAction.RemoveItem:
+        _removeItemFromState(itemToRemoveIndex);
+        break;
+
+      case StateAction.Reorder:
+        _reorderState(newReorderIndex, oldReorderIndex);
+        break;
+        
+      default: break;
+    }
+  }
+}
+
+// list of actions supported in state
+enum StateAction {
+  Clean,
+  Add,
+  Reorder,
+  ClearWidget,
+  RemoveItem
 }
