@@ -60,7 +60,7 @@ class HomePageState extends State<HomePage> {
               newIndex -= 1;
             }
             _historyState.stateDo(
-                StateAction.Reorder, newReorderIndex: newIndex,
+                _historyState.reorder, newReorderIndex: newIndex,
                 oldReorderIndex: oldIndex);
           });
         },
@@ -78,7 +78,7 @@ class HomePageState extends State<HomePage> {
             // Remove the item from list
             setState(() {
               _historyState.stateDo(
-                  StateAction.RemoveItem, itemToRemoveIndex: i);
+                  _historyState.removeItem, itemToRemoveIndex: i);
             });
 
             ScaffoldMessenger.of(context)
@@ -96,7 +96,7 @@ class HomePageState extends State<HomePage> {
   void addWidget() {
     setState(() {
       // add a new state to the end of main state
-      _historyState.stateDo(StateAction.Add);
+      _historyState.stateDo(_historyState.add);
       _scrollController.scrollToEnd();
     });
   }
@@ -117,13 +117,13 @@ class HomePageState extends State<HomePage> {
 
   void clearWidget() {
     setState(() {
-      _historyState.stateDo(StateAction.ClearWidget);
+      _historyState.stateDo(_historyState.clearWidget);
     });
   }
 
   void clearAll() {
     setState(() {
-      _historyState.stateDo(StateAction.Clean);
+      _historyState.stateDo(_historyState.clear);
     });
   }
 

@@ -53,20 +53,6 @@ class HistoryState {
     return _queue.length > 0;
   }
 
-  void _reorderState(int newIndex, int oldIndex) {
-    final List<StatelessWidget> secondList = List.from(
-        getLastState());
-    secondList.insert(newIndex, secondList.removeAt(oldIndex));
-    _listState.add(secondList);
-  }
-
-  void _removeItemFromState(int index) {
-    final List<StatelessWidget> secondList = List.from(
-        getLastState());
-    secondList.removeAt(index);
-    _listState.add(secondList);
-  }
-
   List<StatelessWidget> _getNewState() {
     // create a copy of the last state, add a change, return as a new state
     final List<StatelessWidget> _list = [];
@@ -85,41 +71,36 @@ class HistoryState {
     return _list;
   }
 
-  void stateDo(StateAction action,
-      {int newReorderIndex = 0, int oldReorderIndex = 0, int, itemToRemoveIndex = 0}) {
-    switch(action) {
-      case StateAction.Add:
-        _queue.clear();
-        _listState.add(_getNewState());
-        break;
-
-      case StateAction.Clean:
-        _queue.clear();
-        _listState.clear();
-        break;
-
-      case StateAction.ClearWidget:
-        _listState.add(_emptyList);
-        break;
-
-      case StateAction.RemoveItem:
-        _removeItemFromState(itemToRemoveIndex);
-        break;
-
-      case StateAction.Reorder:
-        _reorderState(newReorderIndex, oldReorderIndex);
-        break;
-        
-      default: break;
-    }
+  void add() {
+    _queue.clear();
+    _listState.add(_getNewState());
   }
-}
 
-// list of actions supported in state
-enum StateAction {
-  Clean,
-  Add,
-  Reorder,
-  ClearWidget,
-  RemoveItem
+  void clear() {
+    _queue.clear();
+    _listState.clear();
+  }
+
+  void clearWidget() {
+    _listState.add(_emptyList);
+  }
+
+  void removeItem(int itemToRemoveIndex) {
+    final List<StatelessWidget> secondList = List.from(
+        getLastState());
+    secondList.removeAt(itemToRemoveIndex);
+    _listState.add(secondList);
+  }
+
+  void reorder(int newIndex, int oldIndex) {
+    final List<StatelessWidget> secondList = List.from(
+        getLastState());
+    secondList.insert(newIndex, secondList.removeAt(oldIndex));
+    _listState.add(secondList);
+  }
+
+  void stateDo(Function action,
+      {int newReorderIndex = 0, int oldReorderIndex = 0, int itemToRemoveIndex = 0}) {
+    action();
+  }
 }
