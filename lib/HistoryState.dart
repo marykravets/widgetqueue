@@ -6,7 +6,7 @@ import 'package:widgetqueue/widget/CustomButton.dart';
 import 'package:widgetqueue/widget/RectButton.dart';
 import 'helper/ListState.dart';
 
-class HistoryState {
+class HistoryState with ChangeNotifier {
   // const of empty list to make sure the list created once (save some memory)
   static final List<StatelessWidget> _emptyList = [];
 
@@ -32,12 +32,14 @@ class HistoryState {
   void undo() {
     if (_listState.getLength() > 0) {
       _queue.add(_listState.removeLast());
+      notifyListeners();
     }
   }
 
   void redo() {
     if (_queue.isNotEmpty) {
       _listState.add(_queue.removeLast());
+      notifyListeners();
     }
   }
 
@@ -71,9 +73,10 @@ class HistoryState {
     return _list;
   }
 
-  void add() {
+  void addState() {
     _queue.clear();
     _listState.add(_getNewState());
+    notifyListeners();
   }
 
   void clearAll() {
@@ -97,10 +100,5 @@ class HistoryState {
         getLastState());
     secondList.insert(newIndex, secondList.removeAt(oldIndex));
     _listState.add(secondList);
-  }
-
-  void stateDo(Function action,
-      {int newReorderIndex = 0, int oldReorderIndex = 0, int itemToRemoveIndex = 0}) {
-    action();
   }
 }

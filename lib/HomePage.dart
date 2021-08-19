@@ -21,6 +21,14 @@ class HomePageState extends State<HomePage> {
   static const _btnSpacing = const SizedBox(height: 10);
   static const _btn4Spacing = const SizedBox(height: 40);
 
+  HomePageState() {
+    _historyState.addListener(_scrollToEndListener);
+  }
+
+  void _scrollToEndListener() {
+    _scrollController.scrollToEnd();
+  }
+
   @override
   Widget build(BuildContext context) {
     final appBar = AppBar(
@@ -59,9 +67,7 @@ class HomePageState extends State<HomePage> {
             if (newIndex > oldIndex) {
               newIndex -= 1;
             }
-            _historyState.stateDo(
-                _historyState.reorder, newReorderIndex: newIndex,
-                oldReorderIndex: oldIndex);
+            _historyState.reorder(newIndex, oldIndex);
           });
         },
         scrollController: _scrollController);
@@ -77,8 +83,7 @@ class HomePageState extends State<HomePage> {
           onDismissed: (direction) {
             // Remove the item from list
             setState(() {
-              _historyState.stateDo(
-                  _historyState.removeItem, itemToRemoveIndex: i);
+              _historyState.removeItem(i);
             });
 
             ScaffoldMessenger.of(context)
@@ -96,22 +101,19 @@ class HomePageState extends State<HomePage> {
   void addWidget() {
     setState(() {
       // add a new state to the end of main state
-      _historyState.stateDo(_historyState.add);
-      _scrollController.scrollToEnd();
+      _historyState.addState();
     });
   }
 
   void undoWidget() {
     setState(() {
       _historyState.undo();
-      _scrollController.scrollToEnd();
     });
   }
 
   void redoWidget() {
     setState(() {
       _historyState.redo();
-      _scrollController.scrollToEnd();
     });
   }
 
