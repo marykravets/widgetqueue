@@ -8,10 +8,10 @@ import 'helper/ListState.dart';
 
 class HistoryState {
   // const of empty list to make sure the list created once (save some memory)
-  final List<StatelessWidget> _emptyList = [];
+  static final List<StatelessWidget> _emptyList = [];
 
-  static late Queue<List<StatelessWidget>> _queue = Queue();
-  static late ListState _listState = ListState();
+  static final Queue<List<StatelessWidget>> _queue = Queue();
+  static final ListState _listState = ListState();
 
   static final HistoryState _historyState = HistoryState._internal();
 
