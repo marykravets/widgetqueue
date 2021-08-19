@@ -76,12 +76,12 @@ class HistoryState {
     _listState.add(_getNewState());
   }
 
-  void clear() {
+  void clearAll() {
     _queue.clear();
     _listState.clear();
   }
 
-  void clearWidget() {
+  void clearState() {
     _listState.add(_emptyList);
   }
 

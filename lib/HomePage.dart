@@ -117,13 +117,13 @@ class HomePageState extends State<HomePage> {
 
   void clearWidget() {
     setState(() {
-      _historyState.stateDo(_historyState.clearWidget);
+      _historyState.clearState();
     });
   }
 
   void clearAll() {
     setState(() {
-      _historyState.stateDo(_historyState.clear);
+      _historyState.clearAll();
     });
   }
 
