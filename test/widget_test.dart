@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:widgetqueue/main.dart';
+import 'package:widgetqueue/res/Const.dart';
 import 'package:widgetqueue/widget/BaseCustomButton.dart';
 
 void main() {
@@ -134,6 +135,36 @@ void main() {
 
     expect(findCustomButton(), findsNWidgets(count));
     await cleanup(tester);
+  });
+
+  testWidgets('5 widgets are added -> find their parent list -> reorder list -> check list size -> dismiss 2 widgets -> check list size', (WidgetTester tester) async {
+    await tester.pumpWidget(WidgetQueueApp());
+    final int count = 5;
+    await tapAddNtimes(tester, count);
+
+    var listFinder = find.byKey(Const.reorderalbeWidgetsViewKey);
+    ReorderableListView listView = listFinder.evaluate().single.widget as ReorderableListView;
+
+    expect(listView.itemCount, count);
+
+    listView.onReorder(0,2);
+    listView.onReorder(1,3);
+
+    expect(listView.itemCount, count);
+
+    var listItemFinder = find.byType(Dismissible);
+    Dismissible item = listItemFinder.evaluate().first.widget as Dismissible;
+    item.onDismissed!(DismissDirection.endToStart);
+    await tester.pump();
+
+    var listItemFinder2 = find.byType(Dismissible);
+    Dismissible item2 = listItemFinder2.evaluate().first.widget as Dismissible;
+    item2.onDismissed!(DismissDirection.startToEnd);
+    await tester.pump();
+
+    listFinder = find.byKey(Const.reorderalbeWidgetsViewKey);
+    listView = listFinder.evaluate().single.widget as ReorderableListView;
+    expect(listView.itemCount, count - 2);
   });
 }
 

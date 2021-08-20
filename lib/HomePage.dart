@@ -61,6 +61,7 @@ class HomePageState extends State<HomePage> {
 
   ReorderableListView buildReorderableListView() {
     return ReorderableListView(
+        key: Const.reorderalbeWidgetsViewKey,
         children: getChildren(),
         onReorder: (int oldIndex, int newIndex) {
           setState(() {

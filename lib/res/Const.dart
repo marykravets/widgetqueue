@@ -1,5 +1,9 @@
 
+import 'package:flutter/material.dart';
+
 class Const {
+
+  static const Key reorderalbeWidgetsViewKey = const Key('reorderalbeWidgetsView');
 
   //#region String constants
 
